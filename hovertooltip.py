@@ -94,20 +94,19 @@ class HoverTooltip:
         self.canvas.draw_idle()
     
     def _adjust_annotation_position(self):
-        """Adjust annotation position to stay within axes bounds."""
-        # Get axes bounds in display coordinates
-        bbox = self.ax.get_window_extent()
-        
-        # Get annotation bounds
-        ann_bbox = self.annotation.get_window_extent()
-        
-        # Adjust if needed
-        x_offset = 20
-        y_offset = 20
-        
-        if ann_bbox.x1 > bbox.x1:
-            x_offset = -100  # Move to left
-        if ann_bbox.y1 > bbox.y1:
-            y_offset = -50  # Move down
-        
-        self.annotation.xyann = (x_offset, y_offset)
+        try:
+            renderer = self.canvas.get_renderer()
+            ann_bbox = self.annotation.get_window_extent(renderer=renderer)
+            ax_bbox = self.ax.get_window_extent(renderer=renderer)
+
+            # Adjust if needed
+            x_offset = 20
+            y_offset = 20
+            if ann_bbox.x1 > ax_bbox.x1:
+                x_offset = -100
+            if ann_bbox.y1 > ax_bbox.y1:
+                y_offset = -50
+
+            self.annotation.xyann = (x_offset, y_offset)
+        except Exception:
+            pass  # Skip adjustment if renderer isn't ready
