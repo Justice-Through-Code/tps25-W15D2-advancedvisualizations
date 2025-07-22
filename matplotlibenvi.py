@@ -54,6 +54,21 @@ class InteractiveWeatherChart(ttk.Frame):
         
         # Connect to figure events for responsiveness
         self.canvas.mpl_connect('resize_event', self._on_resize)
+
+    def _on_mouse_move(self, event):
+        pass
+
+    def _on_click(self, event):
+        pass
+
+    def _on_key_press(self, event):
+        pass
+
+    def _on_scroll(self, event):
+        pass
+
+    def _on_resize(self, event):
+        self.canvas.draw_idle()
     
     def _apply_styling(self):
         """Apply styling based on preferences."""
@@ -73,3 +88,21 @@ class InteractiveWeatherChart(ttk.Frame):
         self.ax.set_xlabel('Time', fontsize=12)
         self.ax.set_ylabel('Value', fontsize=12)
         self.ax.set_title('Weather Data Visualization', fontsize=14, fontweight='bold')
+
+    def plot_data(self):
+        self.ax.clear()
+        timestamps = self.data.get('timestamps', [])
+        temperature = self.data.get('temperature', [])
+        humidity = self.data.get('humidity', [])
+        pressure = self.data.get('pressure', [])
+
+        if len(timestamps) > 0:
+            self.ax.plot(timestamps, temperature, color='red', label='Temperature')
+            self.ax.plot(timestamps, humidity, color='blue', label='Humidity')
+            self.ax.plot(timestamps, pressure, color='green', label='Pressure')
+
+            self.ax.legend(loc='upper right')
+            self.ax.grid(True, alpha=0.3)
+            self.ax.set_title("Weather Data Visualization")
+
+            self.canvas.draw_idle()
